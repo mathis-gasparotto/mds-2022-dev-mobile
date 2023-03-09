@@ -1,9 +1,4 @@
-export function TodoItem({item, handleClick }) {
-
-  const STATE = {
-    TODO: 'todo',
-    DONE: 'done'
-  }
+export default function TodoItem({item, handleClick, STATE }) {
 
   return (
     <li>
