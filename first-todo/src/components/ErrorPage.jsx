@@ -1,5 +1,5 @@
 export default function ErrorPage() {
   return (
-    <p>T'es pas sur la bonne page mec</p>
+    <h2 style={{color: 'red'}}>Something went wrong</h2>
   )
 }
