@@ -1,9 +1,16 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import reactLogo from './../assets/react.svg'
 import React from 'react'
 
 export default function Home() {
   const [count, setCount] = useState(0)
+  const myRef = useRef('')
+
+  function handleSubmit(event) {
+    event.preventDefault()
+    console.log(myRef.current.value)
+    myRef.current.value = ''
+  }
 
   return (
     <div className="App">
@@ -27,6 +34,10 @@ export default function Home() {
       <p className="read-the-docs">
         Click on the Vite and React logos to learn more
       </p>
+      <form onSubmit={handleSubmit}>
+        <input type="text" name="something" placeholder='Say something...' ref={myRef}/>
+        <button type="submit">Send</button>
+      </form>
     </div>
   )
 }
