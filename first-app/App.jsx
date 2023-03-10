@@ -1,39 +1,29 @@
-import * as React from 'react';
-import { Button, View, Text } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-
-function HomeScreen({ navigation }) {
-  return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>Home Screen</Text>
-      <Button
-        title="Go to Details"
-        onPress={() => navigation.navigate('Details')}
-      />
-    </View>
-  );
-}
-
-function DetailsScreen() {
-  return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>Details Screen</Text>
-    </View>
-  );
-}
+import * as React from 'react'
+import { NavigationContainer } from '@react-navigation/native'
+import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import { Home } from './src/views/Home'
+import { Todos } from './src/views/Todos'
+import { StyleSheet } from 'react-native'
+import Constants from 'expo-constants'
 
 const Stack = createNativeStackNavigator();
 
 function App() {
   return (
-    <NavigationContainer>
+    <NavigationContainer styles={styles.container}>
       <Stack.Navigator initialRouteName="Home">
-        <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="Details" component={DetailsScreen} />
+        <Stack.Screen name="Home" component={Home} />
+        <Stack.Screen name="Todos" component={Todos} />
       </Stack.Navigator>
     </NavigationContainer>
   );
 }
 
 export default App;
+
+
+const styles = StyleSheet.create({
+  container: {
+    paddingTop: Constants.statusBarHeight
+  },
+})
