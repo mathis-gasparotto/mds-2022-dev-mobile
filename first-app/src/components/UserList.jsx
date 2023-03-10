@@ -1,11 +1,11 @@
 import { StyleSheet, Text, View } from 'react-native'
 
-export function Home() {
+export function UserList() {
   return (
     <View style={styles.container}>
-      <Text style={styles.h1}>Home</Text>
+      <Text style={styles.h1}>Todo List</Text>
       <View style={styles.content}>
-        <Text>Coucou</Text>
+        <Text>Users</Text>
       </View>
     </View>
   )

@@ -1,9 +1,7 @@
 import {
   SafeAreaView,
-  View,
   FlatList,
   StyleSheet,
-  Text,
   StatusBar,
 } from 'react-native'
 import { TodoItem } from './TodoItem';
@@ -11,17 +9,17 @@ import { TodoItem } from './TodoItem';
 const DATA = [
   {
     id: '1',
-    title: 'First Item',
+    title: 'First Todo',
     state: 'todo'
   },
   {
     id: '2',
-    title: 'Second Item',
+    title: 'Second Todo',
     state: 'todo'
   },
   {
     id: '3',
-    title: 'Third Item',
+    title: 'Third Todo',
     state: 'done'
   },
 ]
@@ -29,12 +27,12 @@ const DATA = [
 export function TodoList() {
   return (
     <SafeAreaView style={styles.container}>
-    <FlatList
-      data={DATA}
-      renderItem={({item}) => <TodoItem item={item} />}
-      keyExtractor={item => item.id}
-    />
-  </SafeAreaView>
+      <FlatList
+        data={DATA}
+        renderItem={({item}) => <TodoItem item={item} />}
+        keyExtractor={item => item.id}
+      />
+    </SafeAreaView>
   )
 }
 
