@@ -5,9 +5,9 @@ import './index.css'
 import Todos from './views/Todos'
 import Users from './views/Users'
 import './App.css'
-import App from './App'
 import AppLayout from './components/AppLayout'
 import User from './views/User'
+import Home from './views/Home'
 
 const router = createBrowserRouter( [
   {
@@ -16,7 +16,7 @@ const router = createBrowserRouter( [
     children: [
       {
         path: '/',
-        element: <App/>
+        element: <Home/>
       },
       {
         path: '/todos',

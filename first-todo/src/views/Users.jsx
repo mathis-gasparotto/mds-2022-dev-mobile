@@ -35,11 +35,11 @@ function handleChange (event) {
 }
 
 function handleClick (item) {
-  const newUsers = todos.filter( (e) => {
-    return e.id === item.id
+  const newUsers = users.filter( (e) => {
+    return e.id !== item.id
   })
 
-  setUser(newUsers)
+  setUsers(newUsers)
 }
 
   return (
