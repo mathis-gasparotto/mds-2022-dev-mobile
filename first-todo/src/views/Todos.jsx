@@ -76,10 +76,6 @@ function handleClickDone (item) {
   setTodos(newTodos)
 }
 
-function handleClickDelete (item) {
-  handleOpen(item)
-}
-
   return (
     <div className="todos">
       <form onSubmit={handleSubmit}>
@@ -93,7 +89,7 @@ function handleClickDelete (item) {
             return item.state === STATE.TODO
           })
           .map( (item) => {
-            return <TodoItem key={item.id} item={item} handleClickDone={handleClickDone} handleClickDelete={handleClickDelete} STATE={STATE} />
+            return <TodoItem key={item.id} item={item} handleClickDone={handleClickDone} handleClickDelete={handleOpen} STATE={STATE} />
           })
         }
       </ul>
