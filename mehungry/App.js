@@ -1,14 +1,12 @@
 import { StatusBar } from 'expo-status-bar'
 import { StyleSheet, View } from 'react-native'
 import Login from './src/views/Login'
+import Constants from 'expo-constants'
 
 export default function App() {
   return (
-    <View style={styles.container}>  
-      <Login />
-      <StatusBar style="auto" />
-    </View>
-  );
+    <Login />
+  )
 }
 
 const styles = StyleSheet.create({
@@ -17,5 +15,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
+    paddingTop: Constants.statusBarHeigh
   },
-});
+})
