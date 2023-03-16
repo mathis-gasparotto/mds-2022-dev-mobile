@@ -5,16 +5,16 @@ import Constants from 'expo-constants'
 
 export default function App() {
   return (
-    <Login />
+    <View style={styles.container}>
+      <Login />
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingTop: Constants.statusBarHeigh
+    paddingTop: Constants.statusBarHeigh,
+    height: '100%',
+    width: '100%',
   },
 })
