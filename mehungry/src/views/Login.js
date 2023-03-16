@@ -103,4 +103,10 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     with: '100%'
   },
+  error: {
+    color: 'red',
+    fontSize: 20,
+    fontWeight: 500,
+    paddingVertical: 20,
+  }
 })

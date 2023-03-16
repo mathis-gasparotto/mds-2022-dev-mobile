@@ -1,20 +1,11 @@
 import { StyleSheet, Text, View } from 'react-native'
 import Login from './src/views/Login'
 import Constants from 'expo-constants'
-import { ApolloClient, InMemoryCache, ApolloProvider, gql, createHttpLink } from '@apollo/client'
+import { ApolloClient, InMemoryCache, ApolloProvider, gql, createHttpLink, useMutation, useQuery } from '@apollo/client'
 import { setContext } from '@apollo/client/link/context'
 import { useState } from 'react'
 import * as SecureStore from 'expo-secure-store'
-
-async function save(key, value) {
-  await SecureStore.setItemAsync(key, value);
-}
-
-save('token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzgsImlhdCI6MTY3ODk4MjY2MywiZXhwIjoxNjgxNTc0NjYzfQ.bBY10puVe55zXO9Q5xGznO1q-yDBNAtPpuHcC5wDI6E')
-
-async function getValueFor(key) {
-  return await SecureStore.getItemAsync(key)
-}
+import { getValueFor } from './src/Store'
 
 const httpLink = createHttpLink({
   uri: 'https://digitalcampus.nerdy-bear.com/graphql',
@@ -26,7 +17,7 @@ const authLink = setContext(async (_, { headers }) => {
   return {
     headers: {
       ...headers,
-      authorization: token ? `Bearer ${token}` : "",
+      authorization: token ? `Bearer ${token}` : '',
     }
   }
 })
@@ -34,37 +25,17 @@ const authLink = setContext(async (_, { headers }) => {
 const client = new ApolloClient({
   link: authLink.concat(httpLink),
   cache: new InMemoryCache()
-});
+})
 
 export default function App() {
   const [places, setPlaces] = useState([])
-
-  client
-  .query({
-    query: gql`{
-      places(pagination: {limit: -1}) {
-        data {
-          id
-          attributes {
-            title
-            address
-            latitude
-            longitude
-            comment
-          }
-        }
-      }
-    }
-    `,
-  })
-  .then((result) => setPlaces(result.data.places.data));
+  
   return (
-    <View style={styles.container}>
-      <Login />
-      {places.map((place) => (
-        <Text key={place.id}>{place.attributes.title}</Text>
-      ))}
-    </View>
+    <ApolloProvider client={client}>
+      <View style={styles.container}>
+        <Login />
+      </View>
+    </ApolloProvider>
   )
 }
 
