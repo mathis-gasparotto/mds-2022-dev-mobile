@@ -4,7 +4,7 @@ import { Home } from './src/views/Home'
 import { Todos } from './src/views/Todos'
 import { StyleSheet } from 'react-native'
 import Constants from 'expo-constants'
-import { BottomTabBarHeightContext, createBottomTabNavigator } from '@react-navigation/bottom-tabs'
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 
 const Tab = createBottomTabNavigator()
