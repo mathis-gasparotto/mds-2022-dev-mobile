@@ -87,6 +87,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     width: '80%',
+    paddingVertical: 50,
   },
   form: {
     width: '80%',
@@ -108,5 +109,11 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 500,
     paddingVertical: 20,
+  },
+  logoutButton: {
+    backgroundColor: 'red',
+    padding: 10,
+    borderRadius: 5,
+    with: '100%'
   }
 })
