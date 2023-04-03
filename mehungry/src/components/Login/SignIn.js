@@ -1,9 +1,8 @@
 import { useState } from 'react'
-import { Text, View, ScrollView, Button } from 'react-native'
+import { Text, View, ScrollView } from 'react-native'
 import { Form, FormItem } from 'react-native-form-component'
-import { gql, useMutation, useQuery } from '@apollo/client'
-import * as SecureStore from 'expo-secure-store'
-import { saveStore, getValueFor } from '../Store'
+import { gql, useMutation } from '@apollo/client'
+import { saveStore, getValueFor } from '../../Store'
 
 const LOGIN_USER = gql`
   mutation UserLogin($input: UsersPermissionsLoginInput!) {

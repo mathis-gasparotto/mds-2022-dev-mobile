@@ -1,24 +1,27 @@
-import { StyleSheet, View } from 'react-native'
-import { NavigationContainer } from '@react-navigation/native'
+import { useState } from 'react'
+import { Text, View, ScrollView, Button, StyleSheet } from 'react-native'
+import { gql, useQuery } from '@apollo/client'
+import * as SecureStore from 'expo-secure-store'
+import { getValueFor } from '../Store'
+import { auth } from '../Middleware'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
+import List from '../components/Places/List'
+import Add from '../components/Places/Add'
 import Icon from '@expo/vector-icons/SimpleLineIcons'
-import SignIn from '../components/Login/SignIn'
-import SignUp from '../components/Login/SignUp'
-import { guest } from '../Middleware'
+
 
 const Tab = createBottomTabNavigator()
 
-function SignInScreen({navigation, route}) {
-  return <SignIn stylesProps={styles} navigation={navigation} route={route} />
+function ListScreen({navigation, route}) {
+  return <List stylesProps={styles} navigation={navigation} route={route} />
 }
 
-function SignUpScreen({navigation, route}) {
-  return <SignUp stylesProps={styles} navigation={navigation} route={route} />
+function AddScreen({navigation, route}) {
+  return <Add stylesProps={styles} navigation={navigation} route={route} />
 }
 
-export default function Login({navigation, route}) {
-  
-  guest({navigation, route})
+export default function Places({navigation, route}) {
+  const [username, setUsername] = useState('')
 
   return (
     <Tab.Navigator
@@ -28,11 +31,11 @@ export default function Login({navigation, route}) {
           let iconName
 
           switch(route.name) {
-            case 'SignIn':
-              iconName = 'login'
+            case 'List':
+              iconName = 'list'
               break
-            case 'SignUp':
-              iconName = 'arrow-up-circle'
+            case 'Add':
+              iconName = 'plus'
               break
           }
 
@@ -49,19 +52,19 @@ export default function Login({navigation, route}) {
       })}
     >
       <Tab.Screen 
-        name="SignIn" 
-        component={SignInScreen} 
+        name="List" 
+        component={ListScreen} 
         options={{ 
-          tabBarLabel: 'Sign In',
-          title: 'Sign In'
+          tabBarLabel: 'List',
+          title: 'List'
         }} 
         />
       <Tab.Screen 
-        name="SignUp" 
-        component={SignUpScreen}
+        name="Add" 
+        component={AddScreen}
         options={{
-          tabBarLabel: 'Sign Up',
-          title: 'Sign Up'
+          tabBarLabel: 'Add',
+          title: 'Add'
 
         }} />
     </Tab.Navigator>
@@ -83,6 +86,14 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: 'white'
   },
+  h2: {
+    fontSize: 30,
+    fontWeight: 500,
+    paddingVertical: 20,
+    width: '100%',
+    textAlign: 'center',
+    color: 'black'
+  },
   content: {
     flex: 1,
     backgroundColor: '#fff',
@@ -90,6 +101,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: '80%',
     paddingVertical: 50,
+  },
+  error: {
+    color: 'red',
+    fontSize: 20,
+    fontWeight: 500,
+    paddingVertical: 20,
+  },
+  logoutButton: {
+    marginTop: 50,
+    width: '90%',
   },
   form: {
     width: '80%',
@@ -105,11 +126,5 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 5,
     with: '100%'
-  },
-  error: {
-    color: 'red',
-    fontSize: 20,
-    fontWeight: 500,
-    paddingVertical: 20,
   }
 })

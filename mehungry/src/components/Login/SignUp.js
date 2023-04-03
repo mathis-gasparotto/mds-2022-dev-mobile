@@ -3,7 +3,7 @@ import { ScrollView } from 'react-native'
 import { Text, View } from 'react-native'
 import { Form, FormItem } from 'react-native-form-component'
 import { gql, useMutation } from '@apollo/client'
-import { saveStore } from '../Store'
+import { saveStore } from '../../Store'
 
 const REGISTER_USER = gql`
   mutation UserRegister($input: UsersPermissionsRegisterInput!) {
