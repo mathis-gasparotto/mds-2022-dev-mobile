@@ -46,7 +46,7 @@ export default function SignIn({stylesProps}) {
   const [username, setUsername] = useState('')
 
   getValueFor('user').then((user) => {
-    setUsername(JSON.parse(user).username)
+    setUsername(JSON.parse(user)?.username)
   })
 
   const [form, setForm] = useState({
