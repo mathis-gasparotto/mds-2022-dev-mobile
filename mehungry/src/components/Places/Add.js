@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Text, View, ScrollView } from 'react-native'
 import { gql, useMutation } from '@apollo/client'
 import { Form, FormItem } from 'react-native-form-component'
+import { GET_PLACES } from './List'
 
 
 const POST_PLACE = gql`
@@ -21,7 +22,11 @@ const POST_PLACE = gql`
 `
 
 export default function Add({stylesProps, navigation, route}) {
-  const [PostPlace, { data, loading, error }] = useMutation(POST_PLACE)
+  const [PostPlace, { data, loading, error }] = useMutation(POST_PLACE, {
+    refetchQueries: [
+      {query: GET_PLACES},
+    ],
+  })
   const [errorMessage, setErrorMessage] = useState('')
   const [form, setForm] = useState({
     title: '',
@@ -39,6 +44,7 @@ export default function Add({stylesProps, navigation, route}) {
           address: form.address,
           latitude: parseFloat(form.latitude),
           longitude: parseFloat(form.longitude),
+          publishedAt: new Date()
         }
       }
     }).then(async (res) => {
