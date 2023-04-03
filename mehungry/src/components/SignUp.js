@@ -24,11 +24,13 @@ export default function SignUp({stylesProps}) {
   const [form, setForm] = useState({
     username: '',
     email: '',
-    password: ''
+    password: '',
+    confirmPassword: ''
   })
 
   const handleRegister = async () => {
-    if(form.username === '' || form.email === '' || form.password === '') return alert('Please fill in all fields')
+    if(form.username === '' || form.email === '' || form.password === '' || form.confirmPassword === '') return alert('Please fill in all fields')
+    if(form.password !== form.confirmPassword) return alert('Please confirm your password')
     await registerUser({
       variables: {
         input: {
@@ -42,7 +44,8 @@ export default function SignUp({stylesProps}) {
       setForm({
         username: '',
         email: '',
-        password: ''
+        password: '',
+        confirmPassword: ''
       })
       if (data) {
         await saveStore('token', data.login.jwt)
@@ -103,6 +106,17 @@ export default function SignUp({stylesProps}) {
               onChangeText={(password) => setForm({
                 ...form,
                 password
+              })}
+              asterik
+              textInputStyle={stylesProps.textInput}
+            />
+            <FormItem
+              label="Confirm password"
+              isRequired
+              value={form.confirmPassword}
+              onChangeText={(confirmPassword) => setForm({
+                ...form,
+                confirmPassword
               })}
               asterik
               textInputStyle={stylesProps.textInput}
