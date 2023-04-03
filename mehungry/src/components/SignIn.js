@@ -36,7 +36,8 @@ const GET_PLACES = gql`
 
 async function disconnect () {
   await SecureStore.deleteItemAsync('token', { requireAuthentication: true })
-  await SecureStore.deleteItemAsync('username', { requireAuthentication: true })
+  // await SecureStore.deleteItemAsync('username', { requireAuthentication: true })
+  await SecureStore.deleteItemAsync('user', { requireAuthentication: true })
 }
 
 export default function SignIn({stylesProps}) {
@@ -44,14 +45,40 @@ export default function SignIn({stylesProps}) {
   const { loading: placesLoading, error: placesError, data: placesData } = useQuery(GET_PLACES)
   const [username, setUsername] = useState('')
 
-  getValueFor('username').then((username) => {
-    setUsername(username)
+  getValueFor('user').then((user) => {
+    setUsername(JSON.parse(user).username)
   })
 
   const [form, setForm] = useState({
     username: '',
     password: ''
   })
+
+  const handleLogin = async () => {
+    if(form.identifier === '' || form.password === '') return alert('Please fill in all fields')
+    await loginUser({
+      variables: {
+        input: {
+          identifier: form.username,
+          password: form.password,
+          provider: 'local'
+        }
+      }
+    })
+    if (!error && !loading) {
+      setForm({
+        username: '',
+        password: ''
+      })
+      if (data) {
+        await saveStore('token', data.login.jwt)
+        saveStore('user', JSON.stringify(data.login.user))
+        // await saveStore('username', data.login.user.username)
+        // saveStore('email', data.login.user.email)
+        alert('Logged in!')
+      }
+    }
+  }
 
   return (
     <View style={stylesProps.container}>
@@ -69,31 +96,7 @@ export default function SignIn({stylesProps}) {
         <View style={stylesProps.content}>
           {username && <Text>Welcome back, {username}</Text>}
           <Form 
-            onButtonPress={() => {
-              if(form.identifier === '' || form.password === '') return alert('Please fill in all fields')
-              loginUser({
-                variables: {
-                  input: {
-                    identifier: form.username,
-                    password: form.password,
-                    provider: 'local'
-                  }
-                }
-              })
-              if (!error && !loading) {
-                setForm({
-                  username: '',
-                  password: ''
-                })
-                if (data) {
-                  saveStore('token', data.login.jwt)
-                  // saveStore('user', JSON.stringify(data.login.user))
-                  saveStore('username', data.login.user.username)
-                  // saveStore('email', data.login.user.email)
-                  alert('Logged in!')
-                }
-              }
-            }}
+            onButtonPress={async () => await handleLogin()}
             buttonStyle={stylesProps.submitButton} 
             style={stylesProps.form}
             buttonText={loading ? 'Loading...' : 'Sign In'}

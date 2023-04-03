@@ -27,6 +27,33 @@ export default function SignUp({stylesProps}) {
     password: ''
   })
 
+  const handleRegister = async () => {
+    if(form.username === '' || form.email === '' || form.password === '') return alert('Please fill in all fields')
+    await registerUser({
+      variables: {
+        input: {
+          username: form.username,
+          email: form.email,
+          password: form.password
+        }
+      }
+    })
+    if (!error && !loading) {
+      setForm({
+        username: '',
+        email: '',
+        password: ''
+      })
+      if (data) {
+        await saveStore('token', data.login.jwt)
+        await saveStore('user', JSON.stringify(data.login.user))
+        // await saveStore('username', data.login.user.username)
+        // saveStore('email', data.login.user.email)
+        alert('Logged in!')
+      }
+    }
+  }
+
   return (
     <View style={stylesProps.container}>
       <Text style={stylesProps.h1}>Sign Up</Text>
@@ -42,35 +69,10 @@ export default function SignUp({stylesProps}) {
       >
         <View style={stylesProps.content}>
           <Form 
-            onButtonPress={() => {
-              if(form.username === '' || form.email === '' || form.password === '') return alert('Please fill in all fields')
-              registerUser({
-                variables: {
-                  input: {
-                    username: form.username,
-                    email: form.email,
-                    password: form.password
-                  }
-                }
-              })
-              if (!error && !loading) {
-                setForm({
-                  username: '',
-                  email: '',
-                  password: ''
-                })
-                if (data) {
-                  saveStore('token', data.login.jwt)
-                  // saveStore('user', JSON.stringify(data.login.user))
-                  saveStore('username', data.login.user.username)
-                  // saveStore('email', data.login.user.email)
-                  alert('Logged in!')
-                }
-              }
-            }}
+            onButtonPress={async () => await handleRegister()}
             buttonStyle={stylesProps.submitButton} 
             style={stylesProps.form}
-            buttonText="Sign Up"
+            buttonText={loading ? 'Loading...' : 'Sign Up'}
             >
             <FormItem
               label="Username" 
