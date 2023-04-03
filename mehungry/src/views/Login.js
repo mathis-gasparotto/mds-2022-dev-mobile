@@ -1,68 +1,70 @@
-import { StyleSheet } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import { NavigationContainer } from '@react-navigation/native'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import Icon from '@expo/vector-icons/SimpleLineIcons'
 import SignIn from '../components/SignIn'
 import SignUp from '../components/SignUp'
+import { guest } from '../Middleware'
 
 const Tab = createBottomTabNavigator()
 
-function SignInScreen() {
-  return <SignIn stylesProps={styles} />
+function SignInScreen({navigation, route}) {
+  return <SignIn stylesProps={styles} navigation={navigation} route={route} />
 }
 
-function SignUpScreen() {
-  return <SignUp stylesProps={styles} />
+function SignUpScreen({navigation, route}) {
+  return <SignUp stylesProps={styles} navigation={navigation} route={route} />
 }
 
-export default function Login() {
+export default function Login({navigation, route}) {
+  
+  guest({navigation, route})
+
   return (
-    <NavigationContainer styles={styles.container}>
-      <Tab.Navigator
-        screenOptions={({ route }) => ({
-          headerShown: false,
-          tabBarIcon: ({ focused, color, size }) => {
-            let iconName
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+        headerShown: false,
+        tabBarIcon: ({ focused, color, size }) => {
+          let iconName
 
-            switch(route.name) {
-              case 'SignIn':
-                iconName = 'login'
-                break
-              case 'SignUp':
-                iconName = 'arrow-up-circle'
-                break
-            }
-
-            return <Icon name={iconName} size={size} color={color} />;
-          },
-          tabBarActiveTintColor: '#fbb03b',
-          tabBarInactiveTintColor: '#ededed',
-          tabBarStyle: {
-            backgroundColor: '#14171c',
-            height: 60,
-            paddingBottom: 10,
-            paddingTop: 10,
+          switch(route.name) {
+            case 'SignIn':
+              iconName = 'login'
+              break
+            case 'SignUp':
+              iconName = 'arrow-up-circle'
+              break
           }
-        })}
-      >
-        <Tab.Screen 
-          name="SignIn" 
-          component={SignInScreen} 
-          options={{ 
-            tabBarLabel: 'Sign In',
-            title: 'Sign In'
-          }} 
-          />
-        <Tab.Screen 
-          name="SignUp" 
-          component={SignUpScreen}
-          options={{
-            tabBarLabel: 'Sign Up',
-            title: 'Sign Up'
 
-          }} />
-      </Tab.Navigator>
-    </NavigationContainer>
+          return <Icon name={iconName} size={size} color={color} />;
+        },
+        tabBarActiveTintColor: '#fbb03b',
+        tabBarInactiveTintColor: '#ededed',
+        tabBarStyle: {
+          backgroundColor: '#14171c',
+          height: 60,
+          paddingBottom: 10,
+          paddingTop: 10,
+        }
+      })}
+    >
+      <Tab.Screen 
+        name="SignIn" 
+        component={SignInScreen} 
+        options={{ 
+          tabBarLabel: 'Sign In',
+          title: 'Sign In'
+        }} 
+        />
+      <Tab.Screen 
+        name="SignUp" 
+        component={SignUpScreen}
+        options={{
+          tabBarLabel: 'Sign Up',
+          title: 'Sign Up'
+
+        }} />
+    </Tab.Navigator>
   )
 }
 
@@ -109,11 +111,5 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 500,
     paddingVertical: 20,
-  },
-  logoutButton: {
-    backgroundColor: 'red',
-    padding: 10,
-    borderRadius: 5,
-    with: '100%'
   }
 })

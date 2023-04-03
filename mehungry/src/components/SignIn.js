@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Text, View, ScrollView, Button } from 'react-native'
 import { Form, FormItem } from 'react-native-form-component'
-import { ApolloProvider, gql, useMutation, useQuery } from '@apollo/client'
+import { gql, useMutation, useQuery } from '@apollo/client'
 import * as SecureStore from 'expo-secure-store'
 import { saveStore, getValueFor } from '../Store'
 
@@ -17,33 +17,10 @@ const LOGIN_USER = gql`
   }
 `
 
-const GET_PLACES = gql`
-  query GetPlaces {
-    places(pagination:{limit: -1}) {
-      data {
-        id
-        attributes {
-          title
-          address
-          latitude
-          longitude
-          comment
-        }
-      }
-    }
-  }
-`
-
-async function disconnect () {
-  await SecureStore.deleteItemAsync('token', { requireAuthentication: true })
-  // await SecureStore.deleteItemAsync('username', { requireAuthentication: true })
-  await SecureStore.deleteItemAsync('user', { requireAuthentication: true })
-}
-
-export default function SignIn({stylesProps}) {
+export default function SignIn({navigation, route, stylesProps}) {
   const [loginUser, { data, loading, error }] = useMutation(LOGIN_USER)
-  const { loading: placesLoading, error: placesError, data: placesData } = useQuery(GET_PLACES)
   const [username, setUsername] = useState('')
+  const [errorMessage, setErrorMessage] = useState('')
 
   getValueFor('user').then((user) => {
     setUsername(JSON.parse(user)?.username)
@@ -56,7 +33,7 @@ export default function SignIn({stylesProps}) {
 
   const handleLogin = async () => {
     if(form.identifier === '' || form.password === '') return alert('Please fill in all fields')
-    const res = await loginUser({
+    loginUser({
       variables: {
         input: {
           identifier: form.username,
@@ -64,16 +41,20 @@ export default function SignIn({stylesProps}) {
           provider: 'local'
         }
       }
+    }).then(async (res) => {
+      setForm({
+        username: '',
+        password: ''
+      })
+      if (res.data) {
+        await saveStore('token', res.data.login.jwt)
+        await saveStore('user', JSON.stringify(res.data.login.user))
+        alert('Logged in!')
+        navigation.navigate('Home')
+      }
+    }).catch((error) => {
+      setErrorMessage(error.message)
     })
-    setForm({
-      username: '',
-      password: ''
-    })
-    if (res.data) {
-      await saveStore('token', res.data.login.jwt)
-      await saveStore('user', JSON.stringify(res.data.login.user))
-      alert('Logged in!')
-    }
   }
 
   return (
@@ -90,7 +71,6 @@ export default function SignIn({stylesProps}) {
         }}
       >
         <View style={stylesProps.content}>
-          {username && <Text>Welcome back, {username}</Text>}
           <Form 
             onButtonPress={async () => await handleLogin()}
             buttonStyle={stylesProps.submitButton} 
@@ -120,14 +100,9 @@ export default function SignIn({stylesProps}) {
               textInputStyle={stylesProps.textInput}
             />
           </Form>
-          {error && 
-            <Text style={stylesProps.error}>{error.message}</Text>
+          {errorMessage && 
+            <Text style={stylesProps.error}>{errorMessage}</Text>
           }
-          
-          {placesLoading && <Text>Loading...</Text>}
-          {placesError && <Text>Error: {placesError.message}</Text>}
-          {placesData && placesData.places.data.map((place) => <Text key={place.id}>{place.attributes.title}</Text>)}
-          <Button color='red' title='Logout' onPress={() => disconnect()} />
         </View>
       </ScrollView>
     </View>

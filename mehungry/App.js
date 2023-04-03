@@ -1,11 +1,12 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import Login from './src/views/Login'
 import Constants from 'expo-constants'
-import { ApolloClient, InMemoryCache, ApolloProvider, gql, createHttpLink, useMutation, useQuery } from '@apollo/client'
+import { ApolloClient, InMemoryCache, ApolloProvider, createHttpLink } from '@apollo/client'
 import { setContext } from '@apollo/client/link/context'
-import { useState } from 'react'
-import * as SecureStore from 'expo-secure-store'
 import { getValueFor } from './src/Store'
+import Home from './src/views/Home'
+import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import { NavigationContainer } from '@react-navigation/native'
 
 const httpLink = createHttpLink({
   uri: 'https://digitalcampus.nerdy-bear.com/graphql',
@@ -27,13 +28,19 @@ const client = new ApolloClient({
   cache: new InMemoryCache()
 })
 
+const Stack = createNativeStackNavigator()
+
 export default function App() {
-  const [places, setPlaces] = useState([])
-  
+    
   return (
     <ApolloProvider client={client}>
       <View style={styles.container}>
-        <Login />
+        <NavigationContainer initialRouteName="Home">
+          <Stack.Navigator screenOptions={({ route }) => ({headerShown: false})}>
+            <Stack.Screen name="Home" component={Home} />
+            <Stack.Screen name="Login" component={Login} />
+          </Stack.Navigator>
+        </NavigationContainer>
       </View>
     </ApolloProvider>
   )

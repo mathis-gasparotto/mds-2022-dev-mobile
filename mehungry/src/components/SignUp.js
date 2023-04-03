@@ -1,10 +1,9 @@
 import { useState } from 'react'
 import { ScrollView } from 'react-native'
-import { StyleSheet, Text, View } from 'react-native'
+import { Text, View } from 'react-native'
 import { Form, FormItem } from 'react-native-form-component'
-import { ApolloProvider, gql, useMutation, useQuery } from '@apollo/client'
-import * as SecureStore from 'expo-secure-store'
-import { saveStore, getValueFor } from '../Store'
+import { gql, useMutation } from '@apollo/client'
+import { saveStore } from '../Store'
 
 const REGISTER_USER = gql`
   mutation UserRegister($input: UsersPermissionsRegisterInput!) {
@@ -18,8 +17,9 @@ const REGISTER_USER = gql`
   }
 `
 
-export default function SignUp({stylesProps}) {
+export default function SignUp({navigation, route, stylesProps}) {
   const [registerUser, { data, loading, error }] = useMutation(REGISTER_USER)
+  const [errorMessage, setErrorMessage] = useState('')
 
   const [form, setForm] = useState({
     username: '',
@@ -31,7 +31,7 @@ export default function SignUp({stylesProps}) {
   const handleRegister = async () => {
     if(form.username === '' || form.email === '' || form.password === '' || form.confirmPassword === '') return alert('Please fill in all fields')
     if(form.password !== form.confirmPassword) return alert('Please confirm your password')
-    const res = await registerUser({
+    registerUser({
       variables: {
         input: {
           username: form.username,
@@ -39,18 +39,22 @@ export default function SignUp({stylesProps}) {
           password: form.password
         }
       }
+    }).then(async (res) => {
+      setForm({
+        username: '',
+        email: '',
+        password: '',
+        confirmPassword: ''
+      })
+      if (res.data) {
+        await saveStore('token', res.data.login.jwt)
+        await saveStore('user', JSON.stringify(res.data.login.user))
+        alert('Logged in!')
+        navigation.navigate('Home')
+      }
+    }).catch((error) => {
+      setErrorMessage(error.message)
     })
-    setForm({
-      username: '',
-      email: '',
-      password: '',
-      confirmPassword: ''
-    })
-    if (res.data) {
-      await saveStore('token', res.data.login.jwt)
-      await saveStore('user', JSON.stringify(res.data.login.user))
-      alert('Logged in!')
-    }
   }
 
   return (
@@ -118,6 +122,9 @@ export default function SignUp({stylesProps}) {
               textInputStyle={stylesProps.textInput}
             />
           </Form>
+          {errorMessage && 
+            <Text style={stylesProps.error}>{errorMessage}</Text>
+          }
         </View>    
       </ScrollView>
     </View>
