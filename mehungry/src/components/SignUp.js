@@ -31,7 +31,7 @@ export default function SignUp({stylesProps}) {
   const handleRegister = async () => {
     if(form.username === '' || form.email === '' || form.password === '' || form.confirmPassword === '') return alert('Please fill in all fields')
     if(form.password !== form.confirmPassword) return alert('Please confirm your password')
-    await registerUser({
+    const res = await registerUser({
       variables: {
         input: {
           username: form.username,
@@ -40,20 +40,16 @@ export default function SignUp({stylesProps}) {
         }
       }
     })
-    if (!error && !loading) {
-      setForm({
-        username: '',
-        email: '',
-        password: '',
-        confirmPassword: ''
-      })
-      if (data) {
-        await saveStore('token', data.login.jwt)
-        await saveStore('user', JSON.stringify(data.login.user))
-        // await saveStore('username', data.login.user.username)
-        // saveStore('email', data.login.user.email)
-        alert('Logged in!')
-      }
+    setForm({
+      username: '',
+      email: '',
+      password: '',
+      confirmPassword: ''
+    })
+    if (res.data) {
+      await saveStore('token', res.data.login.jwt)
+      await saveStore('user', JSON.stringify(res.data.login.user))
+      alert('Logged in!')
     }
   }
 

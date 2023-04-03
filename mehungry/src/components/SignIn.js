@@ -56,7 +56,7 @@ export default function SignIn({stylesProps}) {
 
   const handleLogin = async () => {
     if(form.identifier === '' || form.password === '') return alert('Please fill in all fields')
-    await loginUser({
+    const res = await loginUser({
       variables: {
         input: {
           identifier: form.username,
@@ -65,18 +65,14 @@ export default function SignIn({stylesProps}) {
         }
       }
     })
-    if (!error && !loading) {
-      setForm({
-        username: '',
-        password: ''
-      })
-      if (data) {
-        await saveStore('token', data.login.jwt)
-        saveStore('user', JSON.stringify(data.login.user))
-        // await saveStore('username', data.login.user.username)
-        // saveStore('email', data.login.user.email)
-        alert('Logged in!')
-      }
+    setForm({
+      username: '',
+      password: ''
+    })
+    if (res.data) {
+      await saveStore('token', res.data.login.jwt)
+      await saveStore('user', JSON.stringify(res.data.login.user))
+      alert('Logged in!')
     }
   }
 
