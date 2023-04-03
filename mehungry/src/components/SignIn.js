@@ -75,7 +75,8 @@ export default function SignIn({stylesProps}) {
                 variables: {
                   input: {
                     identifier: form.username,
-                    password: form.password
+                    password: form.password,
+                    provider: 'local'
                   }
                 }
               })
