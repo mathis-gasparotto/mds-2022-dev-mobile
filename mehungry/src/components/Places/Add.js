@@ -35,7 +35,7 @@ export default function Add({stylesProps, navigation, route}) {
     longitude: '',
   })
 
-  const handleLogin = async () => {
+  const handleSubmit = async () => {
     if(form.title === '' || form.address === '' || form.latitude === '' || form.longitude === '') return alert('Please fill in all fields')
     PostPlace({
       variables: {
@@ -78,7 +78,7 @@ export default function Add({stylesProps, navigation, route}) {
       >
         <View style={stylesProps.content}>
           <Form 
-            onButtonPress={async () => await handleLogin()}
+            onButtonPress={async () => await handleSubmit()}
             buttonStyle={stylesProps.submitButton} 
             style={stylesProps.form}
             buttonText={loading ? 'Loading...' : 'Add'}
