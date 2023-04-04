@@ -23,7 +23,7 @@ export const GET_PLACES = gql`
   }
 `
 
-export const DELETE_PLACE = gql`
+const DELETE_PLACE = gql`
   mutation DeletePlace($id: ID!) {
     deletePlace(id: $id) {
       data {
@@ -33,7 +33,7 @@ export const DELETE_PLACE = gql`
   }
 `
 
-export const UPDATE_PLACE = gql`
+const UPDATE_PLACE = gql`
   mutation UpdatePlace($id: ID!, $input: PlaceInput!) {
     updatePlace(id: $id, data: $input)
   }
@@ -100,24 +100,26 @@ function EditForm({attributes, id, setPlaceIdToEdit}) {
       <FormItem
         label="Latitude"
         isRequired
-        value={place.latitude.toString()}
+        value={place.latitude ? place.latitude.toString() : ''}
         onChangeText={(latitude) => setPlace({
           ...place,
-          latitude: parseFloat(latitude)
+          latitude: latitude
         })}
         asterik
         textInputStyle={styles.textInput}
+        keyboardType='number-pad'
         />
       <FormItem
         label="Longitude"
         isRequired
-        value={place.longitude.toString()}
+        value={place.longitude ? place.longitude.toString() : ''}
         onChangeText={(longitude) => setPlace({
           ...place,
-          longitude: parseFloat(longitude)
+          longitude: longitude
         })}
         asterik
         textInputStyle={styles.textInput}
+        keyboardType='number-pad'
       />
       {errorMessage && <Text>{errorMessage}</Text>}
     </Form>

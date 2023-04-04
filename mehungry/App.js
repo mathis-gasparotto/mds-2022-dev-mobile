@@ -7,6 +7,7 @@ import { getValueFor } from './src/Store'
 import Home from './src/views/Home'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { NavigationContainer } from '@react-navigation/native'
+import { useState } from 'react'
 
 const httpLink = createHttpLink({
   uri: 'https://digitalcampus.nerdy-bear.com/graphql',
@@ -31,12 +32,20 @@ const client = new ApolloClient({
 const Stack = createNativeStackNavigator()
 
 export default function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState()
+
+  getValueFor('token').then((token) => {
+    if (token) {
+      return setIsAuthenticated(true)
+    }
+    return setIsAuthenticated(false)
+  })
     
   return (
     <ApolloProvider client={client}>
       <View style={styles.container}>
-        <NavigationContainer initialRouteName="Home">
-          <Stack.Navigator screenOptions={({ route }) => ({headerShown: false})}>
+        <NavigationContainer>
+          <Stack.Navigator screenOptions={({ route }) => ({headerShown: false})} initialRouteName={isAuthenticated ? 'Home' : 'Login'}>
             <Stack.Screen name="Home" component={Home} />
             <Stack.Screen name="Login" component={Login} />
           </Stack.Navigator>

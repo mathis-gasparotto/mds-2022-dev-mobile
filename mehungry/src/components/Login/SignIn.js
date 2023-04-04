@@ -3,6 +3,7 @@ import { Text, View, ScrollView } from 'react-native'
 import { Form, FormItem } from 'react-native-form-component'
 import { gql, useMutation } from '@apollo/client'
 import { saveStore, getValueFor } from '../../Store'
+import { GET_PLACES } from '../Places/List'
 
 const LOGIN_USER = gql`
   mutation UserLogin($input: UsersPermissionsLoginInput!) {
@@ -77,7 +78,7 @@ export default function SignIn({navigation, route, stylesProps}) {
             buttonText={loading ? 'Loading...' : 'Sign In'}
             >
             <FormItem
-              label="Username"
+              label="Username/email"
               isRequired
               value={form.username}
               onChangeText={(username) => setForm({
@@ -86,6 +87,7 @@ export default function SignIn({navigation, route, stylesProps}) {
               })}
               asterik
               textInputStyle={stylesProps.textInput}
+              autoComplete='username'
               />
             <FormItem
               label="Password"
@@ -97,6 +99,8 @@ export default function SignIn({navigation, route, stylesProps}) {
               })}
               asterik
               textInputStyle={stylesProps.textInput}
+              autoComplete='password'
+              secureTextEntry
             />
           </Form>
           {errorMessage && 

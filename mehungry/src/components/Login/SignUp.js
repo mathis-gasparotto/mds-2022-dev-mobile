@@ -4,6 +4,7 @@ import { Text, View } from 'react-native'
 import { Form, FormItem } from 'react-native-form-component'
 import { gql, useMutation } from '@apollo/client'
 import { saveStore } from '../../Store'
+import { GET_PLACES } from '../Places/List'
 
 const REGISTER_USER = gql`
   mutation UserRegister($input: UsersPermissionsRegisterInput!) {
@@ -18,7 +19,11 @@ const REGISTER_USER = gql`
 `
 
 export default function SignUp({navigation, route, stylesProps}) {
-  const [registerUser, { data, loading, error }] = useMutation(REGISTER_USER)
+  const [registerUser, { data, loading, error }] = useMutation(REGISTER_USER, {
+    refetchQueries: [
+      {query: GET_PLACES},
+    ],
+  })
   const [errorMessage, setErrorMessage] = useState('')
 
   const [form, setForm] = useState({
@@ -87,6 +92,7 @@ export default function SignUp({navigation, route, stylesProps}) {
               })}
               asterik
               textInputStyle={stylesProps.textInput}
+              autoComplete='username'
               />
             <FormItem
               label="Email"
@@ -98,6 +104,8 @@ export default function SignUp({navigation, route, stylesProps}) {
               })}
               asterik
               textInputStyle={stylesProps.textInput}
+              keyboardType='email-address'
+              autoComplete='email'
               />
             <FormItem
               label="Password"
@@ -109,6 +117,8 @@ export default function SignUp({navigation, route, stylesProps}) {
               })}
               asterik
               textInputStyle={stylesProps.textInput}
+              autoComplete='password'
+              secureTextEntry
             />
             <FormItem
               label="Confirm password"
@@ -120,6 +130,7 @@ export default function SignUp({navigation, route, stylesProps}) {
               })}
               asterik
               textInputStyle={stylesProps.textInput}
+              secureTextEntry
             />
           </Form>
           {errorMessage && 
