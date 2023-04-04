@@ -143,10 +143,6 @@ const styles = StyleSheet.create({
     fontWeight: 500,
     paddingVertical: 20,
   },
-  logoutButton: {
-    marginTop: 50,
-    width: '90%',
-  },
   form: {
     width: '80%',
   },

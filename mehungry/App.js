@@ -7,7 +7,6 @@ import { getValueFor } from './src/Store'
 import Home from './src/views/Home'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { NavigationContainer } from '@react-navigation/native'
-import { useState } from 'react'
 
 const httpLink = createHttpLink({
   uri: 'https://digitalcampus.nerdy-bear.com/graphql',
@@ -32,7 +31,7 @@ const client = new ApolloClient({
 const Stack = createNativeStackNavigator()
 
 export default function App() {
-      
+
   return (
     <ApolloProvider client={client}>
       <View style={styles.container}>

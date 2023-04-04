@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Text, View, ScrollView, Button, StyleSheet } from 'react-native'
 import { gql, useQuery } from '@apollo/client'
 import * as SecureStore from 'expo-secure-store'
@@ -25,6 +25,7 @@ export const GET_PLACES = gql`
 export default function List({stylesProps, navigation, route}) {
   const { loading: placesLoading, error: placesError, data: placesData } = useQuery(GET_PLACES)
   const [username, setUsername] = useState('')
+  const [placeIds, setPlaceIds] = useState([])
 
   getValueFor('user').then((user) => {
     setUsername(JSON.parse(user)?.username)
@@ -64,7 +65,12 @@ export default function List({stylesProps, navigation, route}) {
               </View>
             </View>
           ))}
-          <View style={stylesProps.logoutButton}>
+          {placesData && <View style={styles.randomButton}>
+            <Button title='Random Place' onPress={() => navigation.navigate('ItemPlace', { 
+              id: placesData.places.data[Math.floor(Math.random() * placesData.places.data.length)].id 
+            })} />
+          </View>}
+          <View style={styles.logoutButton}>
             <Button color='red' title='Logout' onPress={() => disconnect()} />
           </View>
         </View>
@@ -83,6 +89,14 @@ const styles = new StyleSheet.create({
   },
   welcome: {
     marginBottom: 30,
+  },
+  logoutButton: {
+    marginTop: 30,
+    width: '90%',
+  },
+  randomButton: {
+    marginTop: 50,
+    width: '90%',
   },
   btns: {
     flexDirection: 'row',
