@@ -1,10 +1,8 @@
 import { useState } from 'react'
 import { Text, View, ScrollView, Button, StyleSheet } from 'react-native'
-import { gql, useMutation, useQuery } from '@apollo/client'
+import { gql, useQuery } from '@apollo/client'
 import * as SecureStore from 'expo-secure-store'
 import { getValueFor } from '../../Store'
-import { Form, FormItem } from 'react-native-form-component'
-import { createNativeStackNavigator } from '@react-navigation/native-stack'
 
 
 export const GET_PLACES = gql`
