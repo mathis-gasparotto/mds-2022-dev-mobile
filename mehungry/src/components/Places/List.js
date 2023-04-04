@@ -4,6 +4,7 @@ import { gql, useMutation, useQuery } from '@apollo/client'
 import * as SecureStore from 'expo-secure-store'
 import { getValueFor } from '../../Store'
 import { Form, FormItem } from 'react-native-form-component'
+import { createNativeStackNavigator } from '@react-navigation/native-stack'
 
 
 export const GET_PLACES = gql`
@@ -23,117 +24,8 @@ export const GET_PLACES = gql`
   }
 `
 
-const DELETE_PLACE = gql`
-  mutation DeletePlace($id: ID!) {
-    deletePlace(id: $id) {
-      data {
-        id
-      }
-    }
-  }
-`
-
-const UPDATE_PLACE = gql`
-  mutation UpdatePlace($id: ID!, $input: PlaceInput!) {
-    updatePlace(id: $id, data: $input)
-  }
-`
-
-function EditForm({attributes, id, setPlaceIdToEdit}) {
-  const [errorMessage, setErrorMessage] = useState('')
-  const [place, setPlace] = useState(attributes)
-  const [EditPlace, { data, loading, error }] = useMutation(UPDATE_PLACE, {
-    refetchQueries: [
-      {query: GET_PLACES},
-    ],
-  })
-
-  const handleEdit = async () => {
-    EditPlace({
-      variables: {
-        id: id,
-        input: {
-          title: place.title,
-          address: place.address,
-          latitude: parseFloat(place.latitude),
-          longitude: parseFloat(place.longitude),
-          comment: place.comment
-        }
-      }
-    }).then(() => {
-      alert('Place edited!')
-      setPlaceIdToEdit(null)
-    }).catch((err) => {
-      setErrorMessage(err.message)
-    })
-  }
-
-  return (
-    <Form 
-      onButtonPress={async () => await handleEdit()}
-      buttonText={loading ? 'Loading...' : 'Update'}
-      style={styles.form}
-      buttonStyle={styles.submitButton} 
-      >
-      <FormItem
-        label="Title"
-        isRequired
-        value={place.title}
-        onChangeText={(title) => setPlace({
-          ...place,
-          title
-        })}
-        asterik
-        textInputStyle={styles.textInput}
-        />
-      <FormItem
-        label="Address"
-        isRequired
-        value={place.address}
-        onChangeText={(address) => setPlace({
-          ...place,
-          address
-        })}
-        asterik
-        textInputStyle={styles.textInput}
-        />
-      <FormItem
-        label="Latitude"
-        isRequired
-        value={place.latitude ? place.latitude.toString() : ''}
-        onChangeText={(latitude) => setPlace({
-          ...place,
-          latitude: latitude
-        })}
-        asterik
-        textInputStyle={styles.textInput}
-        keyboardType='number-pad'
-        />
-      <FormItem
-        label="Longitude"
-        isRequired
-        value={place.longitude ? place.longitude.toString() : ''}
-        onChangeText={(longitude) => setPlace({
-          ...place,
-          longitude: longitude
-        })}
-        asterik
-        textInputStyle={styles.textInput}
-        keyboardType='number-pad'
-      />
-      {errorMessage && <Text>{errorMessage}</Text>}
-    </Form>
-  )
-}
-
 export default function List({stylesProps, navigation, route}) {
   const { loading: placesLoading, error: placesError, data: placesData } = useQuery(GET_PLACES)
-  const [placeIdToEdit, setPlaceIdToEdit] = useState(null)
-  const [DeletePlace, { loading: deleteLoading, error: deleteError, data: deleteData }] = useMutation(DELETE_PLACE, {
-    refetchQueries: [
-      {query: GET_PLACES},
-    ],
-  })
   const [username, setUsername] = useState('')
 
   getValueFor('user').then((user) => {
@@ -169,15 +61,9 @@ export default function List({stylesProps, navigation, route}) {
               <View style={styles.row}>
                 <Text>{place.attributes.title}</Text>
                 <View style={styles.btns}>
-                  <Button color='blue' title='Edit' onPress={() => setPlaceIdToEdit(place.id)} />
-                  <Button color='red' title={deleteLoading ? 'Loading...' : 'Delete'} onPress={() => DeletePlace({
-                    variables: {
-                      id: place.id
-                    }
-                  }).then(() => alert('Place successfully deleted!'))} />
+                  <Button color='blue' title='View' onPress={() => navigation.navigate('ItemPlace', { id: place.id })} />
                 </View>
               </View>
-              {placeIdToEdit === place.id && <EditForm attributes={place.attributes} id={place.id} setPlaceIdToEdit={(id) => setPlaceIdToEdit(id)} />}
             </View>
           ))}
           <View style={stylesProps.logoutButton}>

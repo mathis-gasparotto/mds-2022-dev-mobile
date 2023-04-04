@@ -8,12 +8,29 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import List from '../components/Places/List'
 import Add from '../components/Places/Add'
 import Icon from '@expo/vector-icons/SimpleLineIcons'
+import Item from '../components/Places/Item'
+import { createNativeStackNavigator } from '@react-navigation/native-stack'
 
 
 const Tab = createBottomTabNavigator()
 
+const Stack = createNativeStackNavigator()
+
 function ListScreen({navigation, route}) {
   return <List stylesProps={styles} navigation={navigation} route={route} />
+}
+
+function ItemScreen({navigation, route}) {
+  return <Item stylesProps={styles} navigation={navigation} route={route} />
+}
+
+function ViewScreen({navigation, route}) {
+  return (
+    <Stack.Navigator screenOptions={({ route }) => ({headerShown: false})} initialRouteName='List'>
+      <Stack.Screen name="ListPlaces" component={ListScreen} />
+      <Stack.Screen name="ItemPlace" component={ItemScreen} />
+    </Stack.Navigator>
+  )
 }
 
 function AddScreen({navigation, route}) {
@@ -53,7 +70,7 @@ export default function Places({navigation, route}) {
     >
       <Tab.Screen 
         name="List" 
-        component={ListScreen} 
+        component={ViewScreen} 
         options={{ 
           tabBarLabel: 'List',
           title: 'List'
@@ -95,6 +112,14 @@ const styles = StyleSheet.create({
     color: 'black'
   },
   content: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '80%',
+    paddingVertical: 50,
+  },
+  wrapper: {
     flex: 1,
     backgroundColor: '#fff',
     alignItems: 'center',

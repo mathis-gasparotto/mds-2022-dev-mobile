@@ -115,6 +115,7 @@ export default function Add({stylesProps, navigation, route}) {
               })}
               asterik
               textInputStyle={stylesProps.textInput}
+              keyboardType='phone-pad'
             />
             <FormItem
               label="Longitude"
@@ -126,6 +127,7 @@ export default function Add({stylesProps, navigation, route}) {
               })}
               asterik
               textInputStyle={stylesProps.textInput}
+              keyboardType='phone-pad'
             />
           </Form>
           {errorMessage && 
