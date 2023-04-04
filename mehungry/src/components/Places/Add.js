@@ -33,6 +33,7 @@ export default function Add({stylesProps, navigation, route}) {
     address: '',
     latitude: '',
     longitude: '',
+    comment: '',
   })
 
   const handleSubmit = async () => {
@@ -44,6 +45,7 @@ export default function Add({stylesProps, navigation, route}) {
           address: form.address,
           latitude: parseFloat(form.latitude),
           longitude: parseFloat(form.longitude),
+          comment: form.comment ? form.comment : null,
           publishedAt: new Date()
         }
       }
@@ -53,6 +55,7 @@ export default function Add({stylesProps, navigation, route}) {
         address: '',
         latitude: '',
         longitude: '',
+        comment: '',
       })
       if (res.data) {
         alert('Place added!')
@@ -115,7 +118,7 @@ export default function Add({stylesProps, navigation, route}) {
               })}
               asterik
               textInputStyle={stylesProps.textInput}
-              keyboardType='phone-pad'
+              inputMode='numeric'
             />
             <FormItem
               label="Longitude"
@@ -127,7 +130,16 @@ export default function Add({stylesProps, navigation, route}) {
               })}
               asterik
               textInputStyle={stylesProps.textInput}
-              keyboardType='phone-pad'
+              inputMode='numeric'
+            />
+            <FormItem
+              label="Comment"
+              value={form.comment}
+              onChangeText={(comment) => setPlace({
+                ...place,
+                comment
+              })}
+              textInputStyle={stylesProps.textInput}
             />
           </Form>
           {errorMessage && 

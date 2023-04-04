@@ -32,20 +32,12 @@ const client = new ApolloClient({
 const Stack = createNativeStackNavigator()
 
 export default function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState()
-
-  getValueFor('token').then((token) => {
-    if (token) {
-      return setIsAuthenticated(true)
-    }
-    return setIsAuthenticated(false)
-  })
-    
+      
   return (
     <ApolloProvider client={client}>
       <View style={styles.container}>
         <NavigationContainer>
-          <Stack.Navigator screenOptions={({ route }) => ({headerShown: false})} initialRouteName={isAuthenticated ? 'Home' : 'Login'}>
+          <Stack.Navigator screenOptions={({ route }) => ({headerShown: false})} initialRouteName='Login'>
             <Stack.Screen name="Home" component={Home} />
             <Stack.Screen name="Login" component={Login} />
           </Stack.Navigator>

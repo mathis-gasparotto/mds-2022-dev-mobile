@@ -1,10 +1,11 @@
-import { useState } from 'react'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import List from '../components/Places/List'
 import Add from '../components/Places/Add'
 import Icon from '@expo/vector-icons/SimpleLineIcons'
 import Item from '../components/Places/Item'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import { StyleSheet } from 'react-native'
+import Map from '../components/Places/Map'
 
 
 const Tab = createBottomTabNavigator()
@@ -32,8 +33,11 @@ function AddScreen({navigation, route}) {
   return <Add stylesProps={styles} navigation={navigation} route={route} />
 }
 
+function MapScreen({navigation, route}) {
+  return <Map stylesProps={styles} navigation={navigation} route={route} />
+}
+
 export default function Places({navigation, route}) {
-  const [username, setUsername] = useState('')
 
   return (
     <Tab.Navigator
@@ -45,6 +49,9 @@ export default function Places({navigation, route}) {
           switch(route.name) {
             case 'List':
               iconName = 'list'
+              break
+            case 'Map':
+              iconName = 'map'
               break
             case 'Add':
               iconName = 'plus'
@@ -69,6 +76,14 @@ export default function Places({navigation, route}) {
         options={{ 
           tabBarLabel: 'List',
           title: 'List'
+        }} 
+        />
+      <Tab.Screen 
+        name="Map" 
+        component={MapScreen} 
+        options={{ 
+          tabBarLabel: 'Map',
+          title: 'Map'
         }} 
         />
       <Tab.Screen 
@@ -119,7 +134,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
-    width: '80%',
+    width: '100%',
     paddingVertical: 50,
   },
   error: {
@@ -146,5 +161,17 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 5,
     with: '100%'
-  }
+  },
+  calloatTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    width: '100%',
+    textAlign: 'center',
+  },
+  calloatAddress: {
+    fontSize: 12,
+    color: '#666',
+    width: '100%',
+    textAlign: 'center',
+  },
 })

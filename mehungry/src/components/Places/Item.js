@@ -3,6 +3,7 @@ import { Text, View, ScrollView, Button, StyleSheet } from 'react-native'
 import { gql, useMutation, useQuery } from '@apollo/client'
 import { Form, FormItem } from 'react-native-form-component'
 import { GET_PLACES } from './List'
+import MapView, { Callout, Marker } from 'react-native-maps'
 
 
 export const GET_PLACE = gql`
@@ -49,7 +50,7 @@ const UPDATE_PLACE = gql`
   }
 `
 
-function EditForm({attributes, setShowEditForm, id}) {
+function EditForm({attributes, setShowEditForm, id, stylesProps}) {
   const [place, setPlace] = useState(attributes)
   const [EditPlace, { data, loading, error }] = useMutation(UPDATE_PLACE, {
     refetchQueries: [
@@ -82,8 +83,8 @@ function EditForm({attributes, setShowEditForm, id}) {
     <Form 
       onButtonPress={async () => await handleEdit()}
       buttonText={loading ? 'Loading...' : 'Update'}
-      style={styles.form}
-      buttonStyle={styles.submitButton} 
+      style={stylesProps.form}
+      buttonStyle={stylesProps.submitButton} 
       >
       <FormItem
         label="Title"
@@ -94,7 +95,7 @@ function EditForm({attributes, setShowEditForm, id}) {
           title
         })}
         asterik
-        textInputStyle={styles.textInput}
+        textInputStyle={stylesProps.textInput}
         />
       <FormItem
         label="Address"
@@ -105,7 +106,7 @@ function EditForm({attributes, setShowEditForm, id}) {
           address
         })}
         asterik
-        textInputStyle={styles.textInput}
+        textInputStyle={stylesProps.textInput}
         />
       <FormItem
         label="Latitude"
@@ -113,11 +114,11 @@ function EditForm({attributes, setShowEditForm, id}) {
         value={place.latitude ? place.latitude.toString() : ''}
         onChangeText={(latitude) => setPlace({
           ...place,
-          latitude: latitude
+          latitude
         })}
         asterik
-        textInputStyle={styles.textInput}
-        keyboardType='phone-pad'
+        textInputStyle={stylesProps.textInput}
+        inputMode='numeric'
         />
       <FormItem
         label="Longitude"
@@ -125,11 +126,20 @@ function EditForm({attributes, setShowEditForm, id}) {
         value={place.longitude ? place.longitude.toString() : ''}
         onChangeText={(longitude) => setPlace({
           ...place,
-          longitude: longitude
+          longitude
         })}
         asterik
-        textInputStyle={styles.textInput}
-        keyboardType='phone-pad'
+        textInputStyle={stylesProps.textInput}
+        inputMode='numeric'
+      />
+      <FormItem
+        label="Comment"
+        value={place.comment ? place.comment : ''}
+        onChangeText={(comment) => setPlace({
+          ...place,
+          comment
+        })}
+        textInputStyle={stylesProps.textInput}
       />
     </Form>
   )
@@ -168,6 +178,7 @@ export default function Item({stylesProps, navigation, route}) {
               <Text>Address: {placeData.place.data.attributes.address}</Text>
               <Text>Latitude: {placeData.place.data.attributes.latitude}</Text>
               <Text>Longitude: {placeData.place.data.attributes.longitude}</Text>
+              {placeData.place.data.attributes.comment && <Text>Comment: {placeData.place.data.attributes.comment}</Text>}
               <View style={styles.btns}>
                 <Button color='blue' title='Edit' onPress={() => setShowEditForm(true)} />
                 <Button color='red' title={deleteLoading ? 'Loading...' : 'Delete'} onPress={() => DeletePlace({
@@ -183,7 +194,35 @@ export default function Item({stylesProps, navigation, route}) {
                   } 
                 />
               </View>
-              {showEditForm && <EditForm attributes={placeData.place.data.attributes} id={placeData.place.data.id} setShowEditForm={(data) => setShowEditForm(data)} />}
+              {showEditForm && <EditForm attributes={placeData.place.data.attributes} id={placeData.place.data.id} setShowEditForm={(data) => setShowEditForm(data)} stylesProps={stylesProps} />}
+              {(
+                placeData.place.data.attributes.latitude >= -85 &&
+                placeData.place.data.attributes.latitude <= 85 &&
+                placeData.place.data.attributes.longitude >= -180 &&
+                placeData.place.data.attributes.longitude <= 180
+                ) && <MapView style={styles.map} region={{
+                  latitude: placeData.place.data.attributes.latitude,
+                  longitude: placeData.place.data.attributes.longitude,
+                  latitudeDelta: 0.1,
+                  longitudeDelta: 0.05,
+                }}>
+                  <Marker
+                    coordinate={{
+                      latitude: placeData.place.data.attributes.latitude,
+                      longitude: placeData.place.data.attributes.longitude,
+                    }}
+                    title={placeData.place.data.attributes.title}
+                    description={placeData.place.data.attributes.address}
+                  >
+                    <Callout>
+                      <View style={stylesProps.calloatContainer}>
+                        <Text style={stylesProps.calloatTitle}>{placeData.place.data.attributes.title}</Text>
+                        <Text style={stylesProps.calloatAddress}>{placeData.place.data.attributes.address}</Text>
+                      </View>
+                    </Callout>
+                  </Marker>
+                </MapView>
+              }
             </View>
           }
         </View>
@@ -216,4 +255,9 @@ const styles = new StyleSheet.create({
     borderRadius: 5,
     with: '100%'
   },
+  map: {
+    width: '100%',
+    height: 300,
+    marginVertical: 20
+  }
 })
